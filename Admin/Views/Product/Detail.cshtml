@@ -1,0 +1,124 @@
+﻿@model Model.Product
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Detail</title>
+    <link rel="stylesheet" href="~/Contents/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Contents/animate.min.css" />
+    <script type="text/javascript" src="~/Scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/wow.js"></script>
+    <link rel="stylesheet" href="~/Contents/global.css" />
+    <script type="text/javascript" src="~/Scripts/global.js"></script>
+    <script type="text/javascript" src="~/Scripts/Calendar3.js"></script>
+</head>
+<body>    
+
+        <div class="panel panel-default">
+
+            <div class="panel-heading">
+                <button type="button" class="btn btn-default btn-back btn-sm"> 返 回 </button>&nbsp;&nbsp;
+                商品详情                
+            </div>
+
+            <div class="panel-body">
+                <table class="table">
+                    <tr>
+                        <td class=col-md-2>@Html.DisplayNameFor(model => model.Id)</td>
+                        <td class=col-md-10>@Html.DisplayFor(model => model.Id)</td>
+                    </tr>
+
+                    <tr>
+                        <td>@Html.DisplayNameFor(model => model.Name)</td>
+                        <td>@Html.DisplayFor(model => model.Name)</td>
+                    </tr>
+
+                    <tr>
+                        <td>@Html.DisplayNameFor(model => model.ProductType.Name)</td>
+                        <td>
+                            @Html.DisplayFor(model => model.ProductType.ParentProductType.Name)
+                            @Html.DisplayFor(model => model.ProductType.Name)
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>@Html.DisplayNameFor(model => model.OldPrice)</td>
+                        <td>@Html.DisplayFor(model => model.OldPrice)</td>
+                    </tr>
+
+                    <tr>
+                        <td>@Html.DisplayNameFor(model => model.NewPrice)</td>
+                        <td>@Html.DisplayFor(model => model.NewPrice)</td>
+                    </tr>
+
+                    <tr>
+                        <td>@Html.DisplayNameFor(model => model.ProductColor.Name)</td>
+                        <td style="background-color: rgb(@Model.ProductColor.Red,@Model.ProductColor.Green,@Model.ProductColor.Blue);">
+                            @Html.DisplayFor(model => model.ProductColor.Name)
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>@Html.DisplayNameFor(model => model.ProductSize.Name)</td>
+                        <td>
+                            @Html.DisplayFor(model => model.ProductSize.Name)
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>@Html.DisplayNameFor(model => model.Sales)</td>
+                        <td>@Html.DisplayFor(model => model.Sales)</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>@Html.DisplayNameFor(model => model.Amount)</td>
+                        <td>@Html.DisplayFor(model => model.Amount)</td>
+                    </tr>
+
+                    <tr>
+                        <td>@Html.DisplayNameFor(model => model.OnSale)</td>
+                        <td>
+                            @if (Model.OnSale == true)
+                            {  <text>上架</text> }
+                            else { <text>下架</text> }
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>@Html.DisplayNameFor(model => model.Detail)</td>
+                        <td>
+                            <div class="col-md-10">
+                                @Html.Raw(Model.Detail)
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>商品图片：</td>
+                        <td>
+                            @foreach (var image in Model.ProductImage)
+                            {
+                                <img src="~/Images/Product/@image.BigImage"/> <br/>
+                            }
+                        </td>
+                    </tr>
+
+
+                </table>
+
+
+
+
+            </div>
+        </div>
+
+   
+    <div style="height: 80px;"></div>
+
+
+</body>
+</html>

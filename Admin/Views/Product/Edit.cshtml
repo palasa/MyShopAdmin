@@ -1,0 +1,245 @@
+﻿@model Model.Product
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Detail</title>
+    <link rel="stylesheet" href="~/Contents/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Contents/animate.min.css" />
+    <script type="text/javascript" src="~/Scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/wow.js"></script>
+    <link rel="stylesheet" href="~/Contents/global.css" />
+    <script type="text/javascript" src="~/Scripts/global.js"></script>
+    <script type="text/javascript" src="~/Scripts/Calendar3.js"></script>
+
+    <style type="text/css">
+        .hide{
+            display:none;
+        }
+
+        body {
+            font-family: Arial, Sans-serif;
+            padding: 0 20px;
+        }
+
+        .field {
+            width: 100%;
+            float: left;
+            margin: 0 0 20px;
+        }
+
+            .field input {
+                margin: 0 0 0 20px;
+            }
+
+        /* Used for the Switch effect:*/
+        .cb-enable, .cb-disable, .cb-enable span, .cb-disable span {
+            background: url(/Images/switch.gif) repeat-x;
+            display: block;
+            float: left;
+        }
+
+            .cb-enable span, .cb-disable span {
+                line-height: 30px;
+                display: block;
+                background-repeat: no-repeat;
+                font-weight: bold;
+            }
+
+            .cb-enable span {
+                background-position: left -90px;
+                padding: 0 10px;
+            }
+
+            .cb-disable span {
+                background-position: right -180px;
+                padding: 0 10px;
+            }
+
+            .cb-disable.selected {
+                background-position: 0 -30px;
+            }
+
+                .cb-disable.selected span {
+                    background-position: right -210px;
+                    color: #fff;
+                }
+
+            .cb-enable.selected {
+                background-position: 0 -60px;
+            }
+
+                .cb-enable.selected span {
+                    background-position: left -150px;
+                    color: #fff;
+                }
+
+        .switch label {
+            cursor: pointer;
+        }
+    </style>
+
+
+    <script>
+        $(function () {
+            $('.btn-do-not-submit').click(function () {
+                return false;
+            });
+        });
+
+
+        $(document).ready(function () {
+            $(".cb-enable").click(function () {
+                var parent = $(this).parents('.switch');
+                $('.cb-disable', parent).removeClass('selected');
+                $(this).addClass('selected');
+                $('.on', parent).attr('checked', true);
+                $('.off', parent).attr('checked', false);
+            });
+            $(".cb-disable").click(function () {
+                var parent = $(this).parents('.switch');
+                $('.cb-enable', parent).removeClass('selected');
+                $(this).addClass('selected');
+                $('.on', parent).attr('checked', false);
+                $('.off', parent).attr('checked', true);
+            });
+        });
+
+    </script>
+</head>
+<body>    
+
+        <div class="panel panel-default">
+
+            <div class="panel-heading">
+                <button type="button" class="btn btn-default btn-back btn-sm"> 返 回 </button>&nbsp;&nbsp;
+                编辑商品信息               
+            </div>
+
+            <div class="panel-body">
+                <form>
+                    <table class="table">
+                        <tr>
+                            <td class=col-md-2>@Html.DisplayNameFor(model => model.Id)</td>
+                            <td class=col-md-10>@Html.DisplayFor(model => model.Id)</td>
+                        </tr>
+
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.Name)</td>
+                            <td>
+                                @*  生成文本框， 自动生成id, name,value 
+                                new { @class="类名" , 属性名="属性值" }
+                                 *@
+                                @Html.TextBoxFor( model=>model.Name , new { @class="form-control",data="123" })  
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.ProductType.Name)</td>
+                            <td>
+                                @*@Html.DisplayFor(model => model.ProductType.ParentProductType.Name)
+                                @Html.DisplayFor(model => model.ProductType.Name)*@
+                                @Html.DropDownListFor( 
+                                        p=>p.TypeId , 
+                                        ViewBag.ProductTypes as IEnumerable<SelectListItem> , 
+                                        "请选择" , 
+                                        new { @class="form-control"} 
+                                )
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.OldPrice)</td>
+                            <td>@Html.TextBoxFor(model => model.OldPrice , new { @class = "form-control"})</td>
+                        </tr>
+
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.NewPrice)</td>
+                            <td>@Html.TextBoxFor(model => model.NewPrice, new { @class = "form-control" })</td>
+                        </tr>
+
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.ProductColor.Name)</td>
+                            <td>
+                                @Html.DropDownListFor(
+                                        p => p.ProductColorId,
+                                        ViewBag.ProductColors as IEnumerable<SelectListItem>,
+                                        "请选择",
+                                        new { @class = "form-control" }
+                                )
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.ProductSize.Name)</td>
+                            <td>
+                                @Html.DropDownListFor(
+                                        p => p.ProductSizeId,
+                                        ViewBag.ProductSizes as IEnumerable<SelectListItem>,
+                                        "请选择",
+                                        new { @class = "form-control" }
+                                )
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.Sales)</td>
+                            <td>@Html.DisplayFor(model => model.Sales)</td>
+                        </tr>
+
+
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.Amount)</td>
+                            <td>@Html.DisplayFor(model => model.Amount)</td>
+                        </tr>
+
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.OnSale)</td>
+                            <td>
+                                <p class="field switch">
+                                    
+                                    <input class="on hide" type="radio" id="radio1" name="OnSale" value="true" @if (Model.OnSale == true) { <text> checked</text> } />
+                                    <input class="off hide" type="radio" id="radio2" name="OnSale" value="false" @if (Model.OnSale == false) { <text> checked</text> } />
+                                    <label for="radio1" class="cb-enable @if (Model.OnSale == true) { <text>selected</text> }"><span>上架</span></label>
+                                    <label for="radio2" class="cb-disable @if (Model.OnSale == false) { <text>selected</text> }"><span>下架</span></label>
+                                </p>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.Detail)</td>
+                            <td>
+                                <div class="col-md-10">
+                                    @Html.Raw(Model.Detail)
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>商品图片：</td>
+                            <td>
+                                @foreach (var image in Model.ProductImage)
+                            {
+                                    <img src="~/Images/Product/@image.BigImage" /> <br />
+                            }
+                            </td>
+                        </tr>
+
+
+                    </table>
+                </form>
+
+
+
+            </div>
+        </div>
+
+   
+    <div style="height: 80px;"></div>
+
+
+</body>
+</html>

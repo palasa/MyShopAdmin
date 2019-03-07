@@ -1,0 +1,298 @@
+﻿@model IQueryable<Model.Product>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>BWFUIFramework</title>
+    <link rel="stylesheet" href="~/Contents/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Contents/animate.min.css" />
+    <script type="text/javascript" src="~/Scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/wow.js"></script>
+    <link rel="stylesheet" href="~/Contents/global.css" />
+    <script type="text/javascript" src="~/Scripts/global.js"></script>
+    <script type="text/javascript" src="~/Scripts/Calendar3.js"></script>
+
+    <script type="text/javascript" src="~/Scripts/select2.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="~/Contents/select2.min.css" />
+    <script>
+        function setPage( page ) {
+            $('input[name=Page]').val(page).parent().submit();
+        }
+
+        $(function () {
+            $('#productTypeSelect').select2();
+            $('#productTypeSelect').change(function () {
+                $('input[name=ProductTypeId]').val($(this).val()).parent().submit();
+            });
+
+            $('#divOrder>label').click(function () {
+                $('input[name=OrderField]').val($(this).attr('data-order-field')).parent().submit();
+            });
+
+            // 点击删除按钮
+            $('.btn-delete').click(function () {
+                var productNameTd = $(this).parent().parent().parent().find('td.product-name');
+                $('.modal-body').html(productNameTd.html());
+                $('#formDelete').attr('action', '/Product/Delete/' + productNameTd.prev().html().trim() );
+            });
+            // 点击批量删除
+            $('#deleteMany').click(function () {
+                var str = '/Product/DeleteMany?';
+
+                $('.product-tr').each(function (i, e) {
+                    var $input = $(e).find('td').first().find('input[name=id]');
+                    if ($input[0].checked) {
+                        // 如果该多选框√中
+                        str += 'id=' + $input.parent().next().next().html().trim() + '&';
+                    }
+                });
+
+                str = str.substr(0, str.length - 1);
+                location.href = str;
+            });
+        });
+    </script>
+</head>
+<body>
+
+    <form method="get" action="~/Product/List" style="display:none">
+        <input type="hidden" name="Page" value="1"/>
+        <input type="hidden" name="ProductTypeId" value="@ViewBag.ProductTypeId" />
+        <input type="hidden" name="OrderField" value="@ViewBag.OrderField" />
+        <input type="hidden" name="OrderType" value="asc" />
+    </form>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <button type="button" class="btn btn-default btn-back btn-sm"> 返 回 </button>&nbsp;&nbsp;
+            商品管理
+            <div class="btn-group btn-group-sm pull-right">
+                <button type="button" class="btn btn-default btn-where">
+                    <span class="arrow-up"></span> 隐藏条件
+                </button>
+                <button id="deleteMany" type="button" class="btn btn-default ">
+                    <img src="~/Images/7.png" height="16px" />
+                    &nbsp;&nbsp;批量删除
+                </button>
+                <button type="button" class="btn btn-default" onclick='location.href = "/Product/Create";'>
+                    <img src="~/Images/plus.png" height="16px" />
+                    &nbsp;&nbsp;新增商品
+                </button>
+            </div>
+        </div>
+
+        <div class="panel-body">
+
+            <!--
+                作者：titushan2010@163.com
+                时间：2017-09-25
+                描述：搜索条件
+            -->
+            <form action="" method="POST" role="form" name="form1">
+                <div class="row row-where">
+
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                        <input type="text" name="" class="form-control" placeholder="文本搜索" />
+                    </div>
+
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                        <button type="submit" class="btn btn-darkgreen form-control"> 开始搜索 </button>
+                    </div>
+
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                        <div id="divOrder" class="btn-group" data-toggle="buttons">
+                            <label data-order-field="NewPrice" class="btn btn-default">
+                                <input type="radio" name="" value="" />按价格排序
+                                <span class="arrow-up"></span>
+                            </label>
+                            <label data-order-field="Sales" class="btn btn-default">
+                                <input type="radio" name="" value="" />按销量排序
+                                @*<span class="caret"></span>*@
+                            </label>
+                            <label data-order-field="Amount" class="btn btn-default">
+                                <input type="radio" name="" value="" />按库存排序
+                            </label>
+                        </div>
+                    </div>
+
+                    @*<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-default"><input type="checkbox" name="" value="" />复选一</label>
+                            <label class="btn btn-default"><input type="checkbox" name="" value="" />复选二</label>
+                            <label class="btn btn-default"><input type="checkbox" name="" value="" />复选三</label>
+                            <label class="btn btn-default"><input type="checkbox" name="" value="" />复选四</label>
+                        </div>
+                    </div>*@
+
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                        <select id="productTypeSelect" name="" class="form-control">
+                            <option value="-1">全部类别</option>
+                            @foreach (var pt1 in ViewBag.productTypeViewModels)
+                            {
+                                <option @if (ViewBag.ProductTypeId == pt1.Id) { <text>selected='selected'</text> } value="@pt1.Id">@pt1.Name</option>
+                                foreach (var pt2 in pt1.ChildProductTypes)
+                                {
+                                    <option @if (ViewBag.ProductTypeId == pt2.Id) { <text>selected='selected'</text> } value="@pt2.Id">&nbsp;&nbsp;&nbsp;&nbsp;--&nbsp;&nbsp;@pt1.Name > @pt2.Name</option>
+                                }
+                            }                            
+                        </select>
+                    </div>
+
+                    
+                </div>
+
+            </form>
+            <!--
+                作者：titushan2010@163.com
+                时间：2017-09-25
+                描述：表格显示部分
+            -->
+            <form action="" method="POST" role="form">
+                <table class="table table-bordered table-condensed table-hover table-responsive cbx-group" style="margin-top: 20px;">
+                    <thead>
+                        <tr>
+                            <th class="td-checkbox"><input type="checkbox" class="cbx-all" /></th>
+                            <th>图片</th>
+                            <th>编号</th>
+                            <th>商品名称</th>
+                            <th>原价</th>
+                            <th>现价</th>
+                            <th class="hidden-xs hidden-sm">颜色</th>
+                            <th class="hidden-xs hidden-sm">尺码</th>
+                            <th class="hidden-xs hidden-sm">销量</th>
+                            <th class="hidden-xs hidden-sm">库存</th>
+                            <th class="hidden-xs">种类</th>
+                            <th class="hidden-xs">上架状态</th>
+                            <th>操作选项</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        @foreach (var p in Model)
+                        {
+                        <tr class="product-tr">
+                            <td align="center" class="td-checkbox"><input type="checkbox" name="id" /></td>
+                            <td width="50"> <img class="img-thumbnail img-responsive" src="~/Images/Product/@p.ProductImage.FirstOrDefault().SmallImage" /> </td>
+                            <td>@p.Id</td>
+                            <td class="product-name">@p.Name</td>
+                            <td>@p.OldPrice</td>
+                            <td>@p.NewPrice</td>
+                            <td class="hidden-xs hidden-sm">@p.ProductColor.Name</td>
+                            <td class="hidden-xs hidden-sm">@p.ProductSize.Name</td>
+                            <td class="hidden-xs hidden-sm">@p.Sales</td>
+                            <td class="hidden-xs hidden-sm">@p.Amount</td>
+                            <td class="hidden-xs">
+                                @p.ProductType.ParentProductType.Name |
+                                @p.ProductType.Name
+                            </td>
+                            <td class="hidden-xs">
+                                @{ var c = "checked= 'checked'"; }
+                                <input type="checkbox" @if (p.OnSale == true) { @c } />
+                            </td>
+
+                        <td width="120px">
+                        <span class="btn-group btn-group-xs">
+                            <a role="button" href="~/Product/Detail/@p.Id" class="btn btn-success">查看</a>
+                            <a role="button" href="~/Product/Edit/@p.Id" class="btn btn-default">编辑</a>
+                            <button type="button" class="btn btn-danger btn-delete" data-toggle="modal" data-target="#myModal">删除</button>
+                        </span>
+                        </td>
+
+                        </tr>
+                        }
+
+                    </tbody>
+                    <tfoot>
+
+                    </tfoot>
+                </table>
+            </form>
+
+            <div class="row">
+                <div class="col-lg-8 col-md-7 col-sm-7 col-xs-5">
+                    <div class="btn-group btn-group-sm">
+                        <button type="button" class="btn btn-darkgreen">
+                            <span class="hidden-xs hidden-sm"> 首 页 </span>
+                            <span class="hidden-lg hidden-md"> |&lt; </span>
+                        </button>
+                        <button type="button" class="btn btn-darkgreen">
+                            <span class="hidden-xs hidden-sm"> 上一页 </span>
+                            <span class="hidden-lg hidden-md"> &lt;&lt; </span>
+                        </button>
+
+                        @for (var i = 1; i <= ViewBag.totalPages; i++)
+                        {
+                        <button onclick="setPage(@i)" type="button" class="btn btn-default @if (i == ViewBag.Page) { <text>btn-darkgreen</text> } ">
+                            @i
+                        </button>
+                        }
+                        
+                        <button type="button" class="btn btn-darkgreen">
+                            <span class="hidden-xs hidden-sm"> 下一页 </span>
+                            <span class="hidden-lg hidden-md"> &gt;&gt; </span>
+                        </button>
+                        <button type="button" class="btn btn-darkgreen">
+                            <span class="hidden-xs hidden-sm"> 末 页 </span>
+                            <span class="hidden-lg hidden-md"> &gt;| </span>
+                        </button>
+                    </div>
+
+                </div>
+                <div class="col-lg-4 col-md-5 col-sm-5 col-xs-7">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" placeholder="7" />
+                        <span class="input-group-addon"> / 60 页 </span>
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-darkgreen">
+                                Go
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+
+        </div>
+    </div>
+
+
+    <div style="height: 80px;"></div>
+
+
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        您确认要删除吗？
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    在这里添加一些文本
+                </div>
+                <div class="modal-footer">
+                    <form id="formDelete" action="" method="get">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                            放弃
+                        </button>
+                        <input type="submit" class="btn btn-danger" value="确认删除">
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+
+</body>
+</html>
+

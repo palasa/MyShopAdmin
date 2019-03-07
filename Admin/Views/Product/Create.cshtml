@@ -1,0 +1,251 @@
+﻿@using Model
+@model Model.Product
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>BWFUIFramework</title>
+    <link rel="stylesheet" href="~/Contents/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Contents/animate.min.css" />
+    <script type="text/javascript" src="~/scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="~/scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/scripts/wow.js"></script>
+    <link rel="stylesheet" href="~/Contents/global.css" />
+    <script type="text/javascript" src="~/scripts/global.js"></script>
+
+    <script type="text/javascript" src="~/scripts/wangEditor.min.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            // 富文本编辑器
+            var E = window.wangEditor;
+            var editor = new E('#editor');
+            var $text1 = $('#text1');
+            editor.customConfig.onchange = function (html) {
+                // 监控变化，同步更新到 textarea
+                $text1.val(html)
+            };
+            editor.create();
+            // 初始化 textarea 的值
+            $text1.val(editor.txt.html());
+
+
+            // 判断上传文件的数量
+            $('#form1').submit(function () {
+                //alert($('#file').get(0).files.length);
+                //return false;
+            });
+        });
+
+    </script>
+</head>
+<body>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <button type="button" class="btn btn-default btn-back btn-sm"> 返 回 </button>&nbsp;&nbsp;面板标题
+        </div>
+        <div class="panel-body">
+
+            <form id="form1" action="" method="post" role="form" enctype="multipart/form-data">
+                <div class="panel panel-default panel-step">
+                    <div class="panel-heading panel-step-head" style="background-color: transparent; ">
+                        <div class="panel-step-btn-group">
+                            <button type="button" class="btn btn-primary btn-step"> 步骤选项一 </button>
+                            <button type="button" class="btn btn-default btn-step"> 步骤选项二 </button>
+                            <button type="button" class="btn btn-default btn-step"> 步骤选项三 </button>
+                        </div>
+                    </div>
+
+                    @*  第一页  *@
+                    <div class="panel-body panel-step-body container">
+
+                        @if (ViewBag.Errors != null)
+                        {
+                            foreach (var error in ViewBag.Errors)
+                            {
+                                <div>error</div>
+                            }
+                        }
+
+                        <div class="row">
+                            <div class="form-group">
+                                <label for="Name" class="col-sm-2 control-label">
+                                    商品名称：
+                                </label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" name="Name" value="@if (Model != null) { @Model.Name }" placeholder="商品名称必须为2~10位"/>
+                                </div>
+                                <div class="col-sm-4 text-danger">
+                                    @Html.ValidationMessageFor(p => p.Name)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group">
+                                <label for="TypeId" class="col-sm-2 control-label">
+                                    商品类别：
+                                </label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" name="TypeId">
+                                        @foreach (ProductType pt in ViewBag.productTypes)
+                                        {
+                                            <option value="@pt.Id">@pt.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group">
+                                <label for="OldPrice" class="col-sm-2 control-label">
+                                    商品原价：
+                                </label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" name="OldPrice" />
+                                </div>
+                                <div class="col-sm-4 text-danger">
+                                    @Html.ValidationMessageFor(p => p.OldPrice)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group">
+                                <label for="NewPrice" class="col-sm-2 control-label">
+                                    商品现价：
+                                </label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" type="text" name="NewPrice" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group">
+                                <label for="ProductColorId" class="col-sm-2 control-label">
+                                    商品颜色：
+                                </label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" name="ProductColorId">
+                                        @foreach (var pt in ViewBag.productColors)
+                                        {
+                                            <option value="@pt.Id">@pt.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group">
+                                <label for="ProductSizeId" class="col-sm-2 control-label">
+                                    商品尺码：
+                                </label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" name="ProductSizeId">
+                                        @foreach (var pt in ViewBag.productSizes)
+                                        {
+                                            <option value="@pt.Id">@pt.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group">
+                                <label for="Sales" class="col-sm-2 control-label">
+                                    销量：
+                                </label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="number" name="Sales" min="0" />
+                                </div>
+                                <div class="col-sm-4 text-danger">
+                                    @Html.ValidationMessageFor(p => p.Sales)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group">
+                                <label for="Amount" class="col-sm-2 control-label">
+                                    库存：
+                                </label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" type="number" name="Amount" min="0" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group">
+                                <label for="Amount" class="col-sm-2 control-label">
+                                    是否上架：
+                                </label>
+                                <div class="col-sm-10">
+                                    <div class="btn-group form-btn-group" data-toggle="buttons">
+                                        <label class="btn btn-success active">
+                                            <input checked="checked" type="radio" name="OnSale" value="true" />上架
+                                        </label>
+                                        <label class="btn btn-warning ">
+                                            <input type="radio" name="OnSale" value="false" />下架
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                    @* 第二页 *@
+                    <div class="panel-body panel-step-body">
+
+                        <div class="form-group">
+                            <label for="Detail" class="col-sm-2 control-label">
+                                商品详情：
+                            </label>
+                            <div class="col-sm-10">
+                                <div id="editor">
+                                    <p>请编辑商品详情...</p>
+                                </div>
+                                <textarea name="Detail" id="text1" style="display:none;"></textarea>
+                            </div>
+                        </div>  
+
+                    </div>
+                    
+                    @* 第三页  *@
+                    <div class="panel-body panel-step-body">
+                        <div class="row">
+                            <div class="form-group">
+                                <label for="Images" class="col-sm-2 control-label">
+                                    商品图片：
+                                </label>
+                                <div class="col-sm-10">
+                                    <input id="file" multiple="multiple" class="form-control" type="file" name="Images" />
+                                </div>                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-footer panel-tab-footer">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-step-prev"> 上一步 </button>
+                            <button type="button" class="btn btn-default btn-step-next"> 下一步 </button>
+                            <button type="submit" class="btn btn-danger btn-step-submit"> 提交表单 </button>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div style="height: 80px;"></div>
+</body>
+</html>
+

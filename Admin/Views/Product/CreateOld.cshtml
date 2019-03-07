@@ -1,0 +1,180 @@
+﻿@using Model
+@model Model.Product
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>BWFUIFramework</title>
+    <link rel="stylesheet" href="~/Contents/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Contents/animate.min.css" />
+    <script type="text/javascript" src="~/scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="~/scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/scripts/wow.js"></script>
+    <link rel="stylesheet" href="~/Contents/global.css" />
+    <script type="text/javascript" src="~/scripts/global.js"></script>
+
+    <script type="text/javascript" src="~/scripts/wangEditor.min.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            var E = window.wangEditor;
+            var editor = new E('#editor');
+            var $text1 = $('#text1');
+            editor.customConfig.onchange = function (html) {
+                // 监控变化，同步更新到 textarea
+                $text1.val(html)
+            };
+            editor.create();
+            // 初始化 textarea 的值
+            $text1.val(editor.txt.html());
+        });
+        
+    </script>
+</head>
+<body>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <button type="button" class="btn btn-default btn-back btn-sm"> 返 回 </button>&nbsp;&nbsp;新增商品
+        </div>
+        <div class="panel-body">
+            <form action="/Product/Create" method="post" role="form" class="form-horizontal">
+
+                <div class="form-group">
+                    <label for="Name" class="col-sm-2 control-label">
+                        商品名称：
+                    </label>
+                    <div class="col-sm-6">
+                        <input class="form-control" type="text" name="Name" value="@if (Model != null) { @Model.Name } " />
+                    </div> 
+                    <div class="col-sm-4 text-danger">
+                        @Html.ValidationMessageFor( p=>p.Name )
+                    </div>                   
+                </div>
+
+                <div class="form-group">
+                    <label for="TypeId" class="col-sm-2 control-label">
+                        商品类别：
+                    </label>
+                    <div class="col-sm-10">
+                        <select class="form-control" name="TypeId">
+                            @foreach (ProductType pt in ViewBag.productTypes) {
+                                <option value="@pt.Id">@pt.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="OldPrice" class="col-sm-2 control-label">
+                        商品原价：
+                    </label>
+                    <div class="col-sm-6">
+                        <input class="form-control" type="text" name="OldPrice" />
+                    </div>
+                    <div class="col-sm-4 text-danger">
+                        @Html.ValidationMessageFor( p=>p.OldPrice )
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="NewPrice" class="col-sm-2 control-label">
+                        商品现价：
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" type="text" name="NewPrice" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="ProductColorId" class="col-sm-2 control-label">
+                        商品颜色：
+                    </label>
+                    <div class="col-sm-10">
+                        <select class="form-control" name="ProductColorId">
+                            @foreach (var pt in ViewBag.productColors)
+                            {
+                                <option value="@pt.Id">@pt.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="ProductSizeId" class="col-sm-2 control-label">
+                        商品尺码：
+                    </label>
+                    <div class="col-sm-10">
+                        <select class="form-control" name="ProductSizeId">
+                            @foreach (var pt in ViewBag.productSizes)
+                            {
+                                <option value="@pt.Id">@pt.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="Sales" class="col-sm-2 control-label">
+                        销量：
+                    </label>
+                    <div class="col-sm-6">
+                        <input class="form-control" type="number" name="Sales" min="0" />
+                    </div>
+                    <div class="col-sm-4 text-danger">
+                        @Html.ValidationMessageFor( p=>p.Sales )
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="Amount" class="col-sm-2 control-label">
+                        库存：
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" type="number" name="Amount" min="0" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="Amount" class="col-sm-2 control-label">
+                        是否上架：
+                    </label>
+                    <div class="col-sm-10">
+                        <div class="btn-group form-btn-group" data-toggle="buttons">
+                            <label class="btn btn-success active">
+                                <input type="radio" name="OnSale" value="true"/>上架
+                            </label>
+                            <label class="btn btn-warning ">
+                                <input type="radio" name="OnSale" value="false"/>下架
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="Detail" class="col-sm-2 control-label">
+                        商品详情：
+                    </label>
+                    <div class="col-sm-10">
+                        <div id="editor">
+                            <p>请编辑商品详情...</p>
+                        </div>
+                        <textarea name="Detail" id="text1" style="display:none;"></textarea>
+                    </div>
+                </div>  
+                
+                <div class="form-group">                    
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-danger form-control"> 确认添加 </button>
+                    </div>
+                </div>              
+                
+
+            </form>
+        </div>
+    </div>
+
+
+    <div style="height: 80px;"></div>
+</body>
+</html>
