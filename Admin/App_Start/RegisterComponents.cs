@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Autofac.Integration.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace Admin.App_Start
               .Where(t => t.Name.EndsWith("BLL")).PropertiesAutowired()
               .AsImplementedInterfaces();
 
-            //根据名称约定（数据访问层的接口和实现均以BLL结尾），实现数据访问接口和数据访问实现的依赖
+            //根据名称约定（数据访问层的接口和实现均以DAL结尾），实现数据访问接口和数据访问实现的依赖
             builder.RegisterAssemblyTypes(IDAL, DAL)
               .Where(t => t.Name.EndsWith("DAL")).PropertiesAutowired()
               .AsImplementedInterfaces();

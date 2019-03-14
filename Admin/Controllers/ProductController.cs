@@ -12,6 +12,7 @@ using System.Web;
 using System.Web.Mvc;
 using ViewModel;
 using Admin.Filters;
+using System.Net;
 
 namespace Admin.Controllers
 {
@@ -21,28 +22,24 @@ namespace Admin.Controllers
     {
 
         // a) 构造函数注入
-        private IProductBLL productBLL ;
+        //private IProductBLL productBLL ;
 
-        private IProductTypeBLL productTypeBLL;
+        //private IProductTypeBLL productTypeBLL;
 
-        private IProductColorBLL productColorBLL;
+        //private IProductColorBLL productColorBLL;
 
-        public ProductController(IProductBLL productBLL , IProductTypeBLL productTypeBLL , IProductColorBLL productColorBLL)
-        {
-            this.productBLL = productBLL;
-            this.productTypeBLL = productTypeBLL;
-            this.productColorBLL = productColorBLL;
-        }
+        //public ProductController(IProductBLL productBLL , IProductTypeBLL productTypeBLL , IProductColorBLL productColorBLL)
+        //{
+        //    this.productBLL = productBLL;
+        //    this.productTypeBLL = productTypeBLL;
+        //    this.productColorBLL = productColorBLL;
+        //}
 
         // b) 属性注入
-        // private IProductTypeBLL productTypeBLL { get; set; }
-
-
-        // private IProductColorBLL productColorBLL = new ProductColorBLL();
-        //public IProductColorBLL productColorBLL { get; set; }
-        // private IProductSizeBLL productSizeBLL = new ProductSizeBLL();
+        public IProductBLL productBLL { get; set; }
+        public IProductTypeBLL productTypeBLL { get; set; }
+        public IProductColorBLL productColorBLL { get; set; }
         public IProductSizeBLL productSizeBLL { get; set;  }
-
         public IProductImageBLL productImageBLL { get; set; }
 
         // GET: Product
@@ -134,6 +131,7 @@ namespace Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
+                #region 查看模型错误信息
                 List<string> sb = new List<string>();
                 //获取所有错误的Key
                 List<string> Keys = ModelState.Keys.ToList();
@@ -147,12 +145,13 @@ namespace Admin.Controllers
                         sb.Add(error.ErrorMessage);
                     }
                 }
-                
+                ViewBag.Errors = sb;
+                #endregion
 
                 ViewBag.productTypes = productTypeBLL.GetAll();
                 ViewBag.productColors = productColorBLL.GetAll();
                 ViewBag.productSizes = productSizeBLL.GetAll();
-                ViewBag.Errors = sb;
+                
                 return View(p);
             }
 
@@ -206,7 +205,7 @@ namespace Admin.Controllers
             return RedirectToAction("List");
         }
 
-        public ActionResult Detail( int id)
+        public ActionResult Detail( int id )
         {
             return View(productBLL.GetById(id));
         }

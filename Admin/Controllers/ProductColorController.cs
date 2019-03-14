@@ -7,12 +7,15 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Model;
+using IBLL;
 
 namespace Admin.Controllers
 {
     public class ProductColorController : Controller
     {
         private MyShopEntities db = new MyShopEntities();
+
+        public IProductColorBLL productColorBLL { get; set; }
 
         // GET: ProductColor
         public ActionResult Index()
@@ -77,17 +80,26 @@ namespace Admin.Controllers
         // POST: ProductColor/Edit/5
         // 为了防止“过多发布”攻击，请启用要绑定到的特定属性，有关 
         // 详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkId=317598。
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Edit([Bind(Include = "Id,Name,Red,Green,Blue")] ProductColor productColor)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        db.Entry(productColor).State = EntityState.Modified;
+        //        db.SaveChanges();
+        //        return RedirectToAction("Index");
+        //    }
+        //    return View(productColor);
+        //}
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Red,Green,Blue")] ProductColor productColor)
+        public ActionResult Edit(ProductColor productColor)
         {
-            if (ModelState.IsValid)
-            {
-                db.Entry(productColor).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(productColor);
+            productColorBLL.Modify(productColor);
+            return RedirectToAction("Index");
         }
 
         // GET: ProductColor/Delete/5

@@ -95,12 +95,14 @@ namespace DAL
         /// <param name="propertyNames">该类中需要修改的属性的数组</param>
         public void Modify(T entity, params string[] propertyNames)
         {
-            db.Set<T>().Attach(entity);
+            // db.Set<T>().Attach(entity);
 
-            for (int i = 0; i < propertyNames.Length; i++)
-            {
-                db.Entry(entity).Property(propertyNames[i]).IsModified = true;
-            }
+            // for (int i = 0; i < propertyNames.Length; i++)
+            // {
+            //     db.Entry(entity).Property(propertyNames[i]).IsModified = true;
+            // }
+
+            db.Entry(entity).State = System.Data.Entity.EntityState.Modified;
 
             db.SaveChanges();
         }
